@@ -16,7 +16,7 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
-;; Version: 1.0.3
+;; Version: 1.0.5
 ;; Author: zk_phi
 ;; URL: http://hins11.yu-yake.com/
 
@@ -39,7 +39,7 @@
 ;;   ;; * emacs-lisp-mode settings
 ;;
 ;;   (add-hook 'emacs-lisp-mode-hook 'outlined-elisp-find-file-hook)
-;;
+
 ;; To install, put code like
 ;;
 ;;   (require 'outlined-elisp-mode)
@@ -50,8 +50,8 @@
 ;;   (add-hook 'emacs-lisp-mode-hook 'outlined-elisp-find-file-hook)
 ;;
 ;; in your .emacs file, outlined-elisp-mode is automatically activated
-;; when one of the first 3 lines matches ";; ++ outlined-elisp ++". You can
-;; also change the keyword, and the range of search.
+;; when one of the first 300 lines seem to be heading of outlined-elisp.
+;; You can also change the trigger, and the range of search.
 ;;
 ;;   (setq outlined-elisp-trigger-pattern ";; \\+\\+ outlined-elisp \\+\\+")
 ;;   (setq outlined-elisp-trigger-limit 3)
@@ -62,22 +62,29 @@
 ;; 1.0.1 added outlined-elisp-startup-folded
 ;; 1.0.2 now allows indents before heading
 ;; 1.0.3 changed default outlined-elisp-trigger-pattern
+;; 1.0.4 minor fix
+;; 1.0.5 changed deafult outlined-elisp-trigger-pattern
 
 ;;; Code:
 
 ;; * constants
 
-(defconst outlined-elisp-version "1.0.3")
+(defconst outlined-elisp-version "1.0.5")
 
 ;; * configures
 
-(defvar outlined-elisp-regexp "[\s\t]*;;\s[*]+\s")
+(defvar outlined-elisp-regexp "^[\s\t]*;;\s[*]+\s")
 (defvar outlined-elisp-top-level 4)
 
-(defvar outlined-elisp-trigger-pattern ";; \\+\\+ outlined-elisp \\+\\+")
-(defvar outlined-elisp-trigger-limit 5)
+(defvar outlined-elisp-trigger-pattern "^;;\s[*]+\s")
+(defvar outlined-elisp-trigger-limit 300)
 
 (defvar outlined-elisp-startup-folded t)
+
+;; * suppress bytecompiler
+
+(declare-function 'outline-level "outline")
+(declare-function 'hide-sublevels "outline")
 
 ;; * mode variable
 
