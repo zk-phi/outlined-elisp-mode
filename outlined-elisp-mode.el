@@ -147,4 +147,4 @@
 
 (provide 'outlined-elisp-mode)
 
-;; outlined-elisp-mode.el ends here
+;;; outlined-elisp-mode.el ends here
