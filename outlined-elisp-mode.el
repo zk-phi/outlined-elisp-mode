@@ -1,4 +1,4 @@
-;;; outlined-elisp-mode --- outline-minor-mode settings for emacs lisp
+;;; outlined-elisp-mode.el --- outline-minor-mode settings for emacs lisp
 
 ;; Copyright (C) 2012 zk_phi
 
