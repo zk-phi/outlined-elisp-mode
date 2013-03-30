@@ -1,0 +1,63 @@
+* outlined-elisp-mode.el
+
+outline-minor-mode settings for elisp
+
+Emacs Lispでoutline-minor-modeを使う
+
+** Screencast
+
+[[screencast.gif]]
+
+** Installation
+
+Require this script
+
+: (require 'outlined-elisp-mode)
+
+then commands "outlined-elisp-mode", and
+"outlined-elisp-find-file-hook" are
+available. "outlined-elisp-find-file-hook" will check if the elisp is
+*outlined* (as described below), and if so, call
+"outlined-elisp-mode".
+
+To turn on outlined-elisp-mode automatically, add hook.
+
+: (add-hook 'emacs-lisp-mode-hook 'outlined-elisp-find-file-hook)
+
+** Usage
+
+*Outlined* elisp code look like :
+
+: ;; * general settings
+: ;; ** show-paren-mode
+:
+: (show-paren-mode 1)
+: (setq show-paren-delay 0)
+:
+: ;; ** cua-mode
+:
+: (cua-mode t)
+: (setq cua-enable-cua-keys nil)
+:
+: ;; * emacs-lisp-mode settings
+:
+: (add-hook 'emacs-lisp-mode-hook 'outlined-elisp-find-file-hook)
+
+When outlined-elisp-mode is turned on, outline-minor-mode commands
+(such as "hide-sublevels", "hide-subtree", "show-all") are
+available. "outline-cycle" in "outline-magic.el" is also cool.
+
+** Customization
+
+"outlined-elisp-find-file-hook" actually searches a header line, and
+if found, call "outlined-elisp-mode". Range of search is limited to
+the first 300 lines for faster load. You may change the range of
+search, by changing "outlined-elisp-trigger-limit".
+
+: ;; search first 50 lines
+: (setq outlined-elisp-trigger-limit 50)
+
+You may also make "outlined-elisp-find-file-hook" search not header
+line, but a special keyword or pattern.
+
+: (setq outlined-elisp-trigger-pattern ";; --- outlined-elisp ---")
