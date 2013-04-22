@@ -71,15 +71,31 @@
 
 (defconst outlined-elisp-version "1.0.5")
 
-;; * configures
+;; * customs
 
-(defvar outlined-elisp-regexp "^[\s\t]*;;\s[*]+\s")
-(defvar outlined-elisp-top-level 4)
+(defgroup outlined-elisp nil
+  "outline-minor-mode settings for emacs lisp"
+  :group 'emacs)
 
-(defvar outlined-elisp-trigger-pattern "^;;\s[*]+\s")
-(defvar outlined-elisp-trigger-limit 300)
+(defcustom outlined-elisp-regexp "^[\s\t]*;;\s[*]+\s"
+  "regexp that matches headings"
+  :group 'outlined-elisp)
 
-(defvar outlined-elisp-startup-folded t)
+(defcustom outlined-elisp-top-level 4
+  "the minimum length of heading"
+  :group 'outlined-elisp)
+
+(defcustom outlined-elisp-trigger-pattern "^;;\s[*]+\s"
+  "trigger pattern for outlined-elisp-mode"
+  :group 'outlined-elisp)
+
+(defcustom outlined-elisp-trigger-limit 300
+  "the maximum length of search for trigger"
+  :group 'outlined-elisp)
+
+(defcustom outlined-elisp-startup-folded t
+  "if outlined-elisp should fold on startup"
+  :group 'outlined-elisp)
 
 ;; * suppress bytecompiler
 
