@@ -107,6 +107,7 @@
 (defvar outlined-elisp-mode nil)
 (make-variable-buffer-local 'outlined-elisp-mode)
 
+;;;###autoload
 (defun outlined-elisp-mode ()
   (interactive)
   (if (setq outlined-elisp-mode (not outlined-elisp-mode))
