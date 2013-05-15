@@ -97,22 +97,19 @@
   "if outlined-elisp should fold on startup"
   :group 'outlined-elisp)
 
-;; * suppress bytecompiler
-
-(declare-function 'outline-level "outline")
-(declare-function 'hide-sublevels "outline")
-
 ;; * mode variable
 
 (defvar outlined-elisp-mode nil)
 (make-variable-buffer-local 'outlined-elisp-mode)
 
 ;;;###autoload
-(defun outlined-elisp-mode ()
+(defun outlined-elisp-mode (&optional arg)
   (interactive)
-  (if (setq outlined-elisp-mode (not outlined-elisp-mode))
-        (outlined-elisp-mode-activate)
-    (outlined-elisp-mode-deactivate)))
+  (setq outlined-elisp-mode (if arg (< arg 0)
+                              (not outlined-elisp-mode)))
+  (message (if outlined-elisp-mode
+               (outlined-elisp-mode-activate)
+             (outlined-elisp-mode-deactivate))))
 
 (when (not (assq 'outlined-elisp-mode minor-mode-alist))
     (setq minor-mode-alist (cons '(outlined-elisp-mode " OLisp") minor-mode-alist)) )
@@ -128,18 +125,19 @@
   (make-local-variable 'outline-level)
   (setq outline-level
         (lambda() (- (outline-level) outlined-elisp-top-level)))
-  (when outlined-elisp-startup-folded (hide-sublevels 1)))
+  (when outlined-elisp-startup-folded (hide-sublevels 1))
+  (message "outlind-elisp-mode activated"))
 
 (defun outlined-elisp-mode-deactivate ()
   (outline-minor-mode -1)
   (kill-local-variable 'outline-regexp)
-  (kill-local-variable 'outline-level))
+  (kill-local-variable 'outline-level)
+  (message "outlined-elisp-mode deactivated"))
 
 (defadvice outline-minor-mode (after deactivate-outlined-elisp-mode-automatically activate)
   (when (and (not (cdr (assq 'outline-minor-mode (buffer-local-variables))))
              (cdr (assq 'outlined-elisp-mode (buffer-local-variables))))
-    (outlined-elisp-mode)
-    (message "outlined-elisp-mode deactivated.")))
+    (outlined-elisp-mode-deactivate)))
 
 ;; * hook
 
