@@ -85,7 +85,7 @@
   "the minimum length of heading"
   :group 'outlined-elisp)
 
-(defcustom outlined-elisp-trigger-pattern "^;;\s[*]+\s"
+(defcustom outlined-elisp-trigger-pattern "^;;\s\\*+\s"
   "trigger pattern for outlined-elisp-mode"
   :group 'outlined-elisp)
 
@@ -99,57 +99,36 @@
 
 ;; * mode variable
 
-(defvar outlined-elisp-mode nil)
-(make-variable-buffer-local 'outlined-elisp-mode)
-
-;;;###autoload
-(defun outlined-elisp-mode (&optional arg)
-  (interactive)
-  (setq outlined-elisp-mode (if arg (< arg 0)
-                              (not outlined-elisp-mode)))
-  (message (if outlined-elisp-mode
-               (outlined-elisp-mode-activate)
-             (outlined-elisp-mode-deactivate))))
-
-(when (not (assq 'outlined-elisp-mode minor-mode-alist))
-    (setq minor-mode-alist (cons '(outlined-elisp-mode " OLisp") minor-mode-alist)) )
-
-;; * activate and deactivate outlined-elisp-mode
-
-(defun outlined-elisp-mode-activate ()
-  (outline-minor-mode 1)
-  ;; change outline-regexp
-  (make-local-variable 'outline-regexp)
-  (setq outline-regexp outlined-elisp-regexp)
-  ;; override outline-level function
-  (make-local-variable 'outline-level)
-  (setq outline-level
-        (lambda() (- (outline-level) outlined-elisp-top-level)))
-  (when outlined-elisp-startup-folded (hide-sublevels 1))
-  (message "outlind-elisp-mode activated"))
-
-(defun outlined-elisp-mode-deactivate ()
-  (outline-minor-mode -1)
-  (kill-local-variable 'outline-regexp)
-  (kill-local-variable 'outline-level)
-  (message "outlined-elisp-mode deactivated"))
+(define-minor-mode outlined-elisp-mode
+  "outline-minor-mode settings for emacs lisp"
+  :init-value nil
+  :lighter " OLisp"
+  :global nil
+  (if outlined-elisp-mode
+      (progn (outline-minor-mode 1)
+             (make-local-variable 'outline-regexp)
+             (setq outline-regexp outlined-elisp-regexp)
+             (make-local-variable 'outline-level)
+             (setq outline-level
+                   (lambda ()
+                     (- (outline-level) outlined-elisp-top-level)))
+             (when outlined-elisp-startup-folded (hide-sublevels 1)))
+    (outline-minor-mode -1)
+    (kill-local-variable 'outline-regexp)
+    (kill-local-variable 'outline-level)))
 
 (defadvice outline-minor-mode (after deactivate-outlined-elisp-mode-automatically activate)
-  (when (and (not (cdr (assq 'outline-minor-mode (buffer-local-variables))))
-             (cdr (assq 'outlined-elisp-mode (buffer-local-variables))))
-    (outlined-elisp-mode-deactivate)))
+  (when (and (not outline-minor-mode) outlined-elisp-mode)
+    (outlined-elisp-mode -1)))
 
-;; * hook
-
-(defun outlined-elisp-get-eol (point)
-  (save-excursion (goto-char point) (end-of-line) (point)))
+;; * trigger
 
 (defun outlined-elisp-get-first-n-lines (num)
   (let* ((begin 1)
-         (end (outlined-elisp-get-eol begin)))
+         (end (point-at-eol begin)))
     (while (and (> (setq num (1- num)) 0)
                 (> (point-max) (1+ end)))
-      (setq end (outlined-elisp-get-eol (1+ end))))
+      (setq end (point-at-eol (1+ end))))
     (buffer-substring-no-properties begin end)))
 
 (defun outlined-elisp-find-file-hook ()
