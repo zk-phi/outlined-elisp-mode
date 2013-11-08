@@ -71,6 +71,11 @@
 
 (defconst outlined-elisp-version "1.0.5")
 
+;; * suppress byte-compiler
+
+(declare-function outline-level "outline")
+(declare-function hide-sublevels "outline")
+
 ;; * customs
 
 (defgroup outlined-elisp nil
